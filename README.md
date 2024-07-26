@@ -1,4 +1,4 @@
-## Clash for Android
+## Clash M
 
 A Graphical user interface of [clash](https://github.com/qqty012/clash) for Android
 
