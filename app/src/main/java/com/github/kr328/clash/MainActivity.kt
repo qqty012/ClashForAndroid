@@ -5,6 +5,7 @@ import com.github.kr328.clash.common.util.intent
 import com.github.kr328.clash.common.util.ticker
 import com.github.kr328.clash.design.MainDesign
 import com.github.kr328.clash.design.ui.ToastDuration
+import com.github.kr328.clash.server.HttpServer
 import com.github.kr328.clash.store.TipsStore
 import com.github.kr328.clash.util.startClashService
 import com.github.kr328.clash.util.stopClashService
@@ -26,6 +27,7 @@ class MainActivity : BaseActivity<MainDesign>() {
         launch(Dispatchers.IO) {
             showUpdatedTips(design)
         }
+        HttpServer(this)
 
         design.fetch()
 

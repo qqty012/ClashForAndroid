@@ -10,6 +10,7 @@ import com.github.kr328.clash.design.store.UiStore
 import com.github.kr328.clash.service.ClashService
 import com.github.kr328.clash.service.TunService
 import com.github.kr328.clash.service.util.sendBroadcastSelf
+import java.io.File
 
 fun Context.startClashService(): Intent? {
     val startTun = UiStore(this).enableVpn
@@ -23,6 +24,9 @@ fun Context.startClashService(): Intent? {
     } else {
         startForegroundServiceCompat(ClashService::class.intent)
     }
+
+    // 清空 流量日志
+    File(filesDir, "clash/clash.log").writeText("")
 
     return null
 }
