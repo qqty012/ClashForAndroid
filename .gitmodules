@@ -1,1 +1,7 @@
 
+[submodule "core/src/foss/golang/clash"]
+	path = core/src/foss/golang/clash
+	url = https://github.com/qqty012/clash2.git
+[submodule "core/src/premium/golang/clash"]
+	path = core/src/premium/golang/clash
+	url = https://github.com/qqty012/clash2.git
