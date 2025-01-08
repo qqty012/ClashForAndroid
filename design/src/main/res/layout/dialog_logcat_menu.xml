@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="master"
+            type="com.github.kr328.clash.design.LogcatDesign" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.github.kr328.clash.design.view.LargeActionLabel
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/bottom_sheet_menu_items_padding"
+            android:id="@+id/logcat_add"
+            app:icon="@drawable/ic_baseline_add"
+            app:text="@string/new_rule" />
+
+        <com.github.kr328.clash.design.view.LargeActionLabel
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/logcat_duplicate"
+            android:padding="@dimen/bottom_sheet_menu_items_padding"
+            app:icon="@drawable/ic_baseline_content_copy"
+            app:text="@string/duplicate" />
+
+    </LinearLayout>
+</layout>
