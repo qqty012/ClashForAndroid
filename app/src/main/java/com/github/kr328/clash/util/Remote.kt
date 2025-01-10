@@ -5,6 +5,7 @@ import com.github.kr328.clash.common.log.Log
 import com.github.kr328.clash.remote.Remote
 import com.github.kr328.clash.service.remote.IClashManager
 import com.github.kr328.clash.service.remote.IProfileManager
+import com.github.kr328.clash.service.remote.IRuleManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -34,6 +35,24 @@ suspend fun <T> withProfile(
     while (true) {
         val remote = Remote.service.remote.get()
         val client = remote.profile()
+
+        try {
+            return withContext(context) { client.block() }
+        } catch (e: DeadObjectException) {
+            Log.w("Remote services panic")
+
+            Remote.service.remote.reset(remote)
+        }
+    }
+}
+
+suspend fun <T> withRule(
+    context: CoroutineContext = Dispatchers.IO,
+    block: suspend IRuleManager.() -> T
+): T {
+    while (true) {
+        val remote = Remote.service.remote.get()
+        val client = remote.rule()
 
         try {
             return withContext(context) { client.block() }

@@ -26,27 +26,10 @@ import java.net.InetSocketAddress
 import java.net.ServerSocket
 import java.net.Socket
 
-data class HttpRequest(
-    val method: String,
-    val path: String,
-    val version: String,
-    val headers: Map<String, String>,
-    val body: String,
-    val params: Map<String, String>
-)
-
-data class HttpResponse(
-    val code: Int,
-    val message: String,
-    val data: Any?) {
-    fun toJson(): String {
-        return Gson().toJson(this)
-    }
-}
 
 class HttpServer(private val context: Context, private val port: Int = 6330): CoroutineScope by CoroutineScope(Dispatchers.IO) {
 
-    private lateinit var server: ServerSocket
+    private var server: ServerSocket? = null
     private lateinit var client: Socket
 
     private val clashRunning
@@ -54,15 +37,22 @@ class HttpServer(private val context: Context, private val port: Int = 6330): Co
 
     init {
         launch {
-            server = ServerSocket()
-            server.bind(InetSocketAddress("0.0.0.0", port))
-            while (true) {
-                val client = server.accept()
-                Thread {
-                    runBlocking {
-                        handleRequest(client)
+            try {
+                if (server != null) return@launch
+                server = ServerSocket()
+                server?.let {
+                    it.bind(InetSocketAddress("0.0.0.0", port))
+                    while (true) {
+                        val client = it.accept()
+                        Thread {
+                            runBlocking {
+                                handleRequest(client)
+                            }
+                        }.start()
                     }
-                }.start()
+                }
+            } catch (e: Exception) {
+                com.github.kr328.clash.common.log.Log.e(e.message ?: "", e.fillInStackTrace())
             }
         }
     }
@@ -72,9 +62,9 @@ class HttpServer(private val context: Context, private val port: Int = 6330): Co
         val lines = request.split("\n")
         val firstLine = lines[0].split(" ")
         val method = firstLine[0]
+        val srcPath = if (firstLine.size >=2) firstLine[1] else "/"
         val version = if (firstLine.size >=3) firstLine[2] else "HTTP/1.1"
-        val m2 = if (firstLine.size >=2) firstLine[1] else "/"
-        val uri = Uri.parse("http://localhost${m2}")
+        val uri = Uri.parse("http://localhost${srcPath}")
         val path = uri.path ?: "/"
         // 解析参数
         val params = mutableMapOf<String, String>()
@@ -93,9 +83,9 @@ class HttpServer(private val context: Context, private val port: Int = 6330): Co
 
             if (line.isEmpty()) break
 
-            val header = line.split(": ")
+            val header = line.split(":")
 
-            headers[header[0]] = if (header.size > 1) header[1] else ""
+            headers[header[0].trim()] = if (header.size > 1) header[1].trim() else ""
         }
         // 解析body
         val body = lines.last()
@@ -113,11 +103,17 @@ class HttpServer(private val context: Context, private val port: Int = 6330): Co
         }
 
         // 构建响应状态
-        response.append("HTTP/1.1 $code $status\n")
+        response.append("HTTP/1.1 $code $status\r\n")
         // 构建响应头
-        response.append("Content-Type: $mineType; charset=utf-8\n")
-        response.append("Content-Length: ${data?.length ?: 0}\n")
-        response.append("Connection: close\n\n")
+        response.append("Content-Type: $mineType; charset=utf-8\r\n")
+        response.append("Content-Length: ${data?.length ?: 0}\r\n")
+        // 跨域支持
+        response.append("Access-Control-Allow-Origin: *\r\n")
+        response.append("Access-Control-Allow-Methods: GET, POST\r\n")
+        response.append("Access-Control-Allow-Headers: *\r\n")
+
+        response.append("Server: ClashForAndroid\r\n")
+        response.append("Connection: close\r\n\r\n")
         // 构建响应体
         response.append(data)
 
@@ -131,12 +127,8 @@ class HttpServer(private val context: Context, private val port: Int = 6330): Co
         sendResponse(200, "application/json", response.toJson())
     }
 
-    private fun sendText(response: String) {
-        sendResponse(200, "text/plain", response)
-    }
-
-    private fun ok() {
-        sendJson(HttpResponse(0, "ok", null))
+    private fun success(data: Any? = null) {
+        sendJson(HttpResponse.success(data))
     }
 
     private suspend fun handleRequest(socket: Socket) {
@@ -198,12 +190,12 @@ class HttpServer(private val context: Context, private val port: Int = 6330): Co
                 context.startClashService()
             }
         }
-        ok()
+        success()
     }
 
     private fun clashStop() {
         context.stopClashService()
-        ok()
+        success()
     }
 
     private fun clashStatus() {
@@ -230,7 +222,7 @@ class HttpServer(private val context: Context, private val port: Int = 6330): Co
                 sendJson(HttpResponse(-1, e.toString(), null))
                 return@withProfile
             }
-            ok()
+            success()
             return@withProfile
         }
     }
@@ -247,11 +239,11 @@ class HttpServer(private val context: Context, private val port: Int = 6330): Co
                     delete(it.uuid)
                 } else if (it.name == name) {
                     delete(it.uuid)
-                    ok()
+                    success()
                     return@withProfile
                 }
             }
-            ok()
+            success()
         }
     }
 
@@ -267,11 +259,11 @@ class HttpServer(private val context: Context, private val port: Int = 6330): Co
                     update(it.uuid)
                 } else if (it.name == name) {
                     update(it.uuid)
-                    ok()
+                    success()
                     return@withProfile
                 }
             }
-            ok()
+            success()
         }
     }
 
@@ -291,7 +283,7 @@ class HttpServer(private val context: Context, private val port: Int = 6330): Co
                 }
             }
             if (isOk) {
-                ok()
+                success()
             } else {
                 sendJson(HttpResponse(-1, "No such profile [name=$name]", null))
             }
@@ -312,12 +304,12 @@ class HttpServer(private val context: Context, private val port: Int = 6330): Co
         if (!isOk) {
             sendJson(HttpResponse(-100, "failed", null))
         } else {
-            ok()
+            success()
         }
     }
 
     private fun clashProxyQueryFlow() {
-        ok()
+        success()
     }
 
     private fun clashLogs() {
@@ -328,13 +320,13 @@ class HttpServer(private val context: Context, private val port: Int = 6330): Co
                     try {
                         val j = Gson().fromJson(it, Log::class.java)
                         list.add(j)
-                    } catch (ignore: Exception) {
-                        ignore.printStackTrace()
+                    } catch (e: Exception) {
+                        e.printStackTrace(System.err)
                     }
                 }
             }
         }
-        sendJson(HttpResponse(0, "ok", list))
+        success(list)
     }
 
 

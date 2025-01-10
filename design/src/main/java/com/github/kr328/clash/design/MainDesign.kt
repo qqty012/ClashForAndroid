@@ -19,6 +19,7 @@ class MainDesign(context: Context) : Design<MainDesign.Request>(context) {
         ToggleStatus,
         OpenProxy,
         OpenProfiles,
+        OpenRules,
         OpenProviders,
         OpenLogs,
         OpenSettings,

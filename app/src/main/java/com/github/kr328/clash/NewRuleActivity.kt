@@ -1,6 +1,5 @@
 package com.github.kr328.clash
 
-import android.os.Build
 import androidx.activity.OnBackPressedCallback
 import com.github.kr328.clash.core.model.Rule
 import com.github.kr328.clash.design.NewRuleDesign
@@ -20,12 +19,8 @@ class NewRuleActivity : BaseActivity<NewRuleDesign>() {
     override suspend fun main() {
         setResult(RESULT_CANCELED)
 
-        @Suppress("DEPRECATION")
-        val original = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra("rule_item", Rule::class.java)
-        } else {
-            intent.getParcelableExtra("rule_item")
-        } ?: Rule(Rule.Type.Domain.value.uppercase(), "", "")
+        val original = intent.getParcelableExtra("rule_item") ?:
+        Rule(Rule.Type.Domain.value.uppercase(), "", "")
 
         isNew = intent.getBooleanExtra("rule_is_new", false)
 

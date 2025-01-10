@@ -5,6 +5,7 @@ import android.os.IBinder
 import com.github.kr328.clash.service.remote.IClashManager
 import com.github.kr328.clash.service.remote.IRemoteService
 import com.github.kr328.clash.service.remote.IProfileManager
+import com.github.kr328.clash.service.remote.IRuleManager
 import com.github.kr328.clash.service.remote.wrap
 import com.github.kr328.clash.service.util.cancelAndJoinBlocking
 
@@ -13,6 +14,7 @@ class RemoteService : BaseService(), IRemoteService {
 
     private var clash: ClashManager? = null
     private var profile: ProfileManager? = null
+    private var rule: RuleManager? = null
     private var clashBinder: IClashManager? = null
     private var profileBinder: IProfileManager? = null
 
@@ -21,6 +23,7 @@ class RemoteService : BaseService(), IRemoteService {
 
         clash = ClashManager(this)
         profile = ProfileManager(this)
+        rule = RuleManager(this, profile!!)
         clashBinder = clash?.wrap() as IClashManager?
         profileBinder = profile?.wrap() as IProfileManager?
     }
@@ -30,6 +33,7 @@ class RemoteService : BaseService(), IRemoteService {
 
         clash?.cancelAndJoinBlocking()
         profile?.cancelAndJoinBlocking()
+        rule?.cancelAndJoinBlocking()
     }
 
     override fun onBind(intent: Intent?): IBinder {
@@ -42,5 +46,9 @@ class RemoteService : BaseService(), IRemoteService {
 
     override fun profile(): IProfileManager {
         return profileBinder!!
+    }
+
+    override fun rule(): IRuleManager {
+        return rule!!
     }
 }

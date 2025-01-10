@@ -213,4 +213,9 @@
     <string name="name_server_policy">Name Server 策略</string>
     <string name="block_loopback">阻止本地迴環</string>
     <string name="block_loopback_summary">阻止本地迴環連接</string>
+    <string name="format_profile_rules">%s 的規則</string>
+    <string name="new_rule">新建規則</string>
+    <string name="empty_type">空類型</string>
+    <string name="invalid_content">無效的內容</string>
+    <string name="profile_flow">已使用:%s  /  總共:%s  過期時間: %s</string>
 </resources>

@@ -35,6 +35,7 @@ golang {
 }
 
 android {
+    namespace = "com.github.kr328.clash.core"
     productFlavors {
         all {
             externalNativeBuild {

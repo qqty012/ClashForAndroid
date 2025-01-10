@@ -18,6 +18,9 @@ data class Profile(
     val source: String,
     val active: Boolean,
     val interval: Long,
+    val used: Long? = null,
+    val total: Long? = null,
+    val expire: Long? = null,
 
     val updatedAt: Long,
     val imported: Boolean,

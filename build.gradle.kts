@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_VARIABLE")
-
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import java.net.URL
@@ -17,6 +15,7 @@ buildscript {
         classpath(libs.build.kotlin.serialization)
         classpath(libs.build.ksp)
         classpath(libs.build.golang)
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0")
     }
 }
 
@@ -40,15 +39,15 @@ subprojects {
             minSdk = 21
             targetSdk = 31
 
-            versionName = "2.5.13"
-            versionCode = 205012
+            versionName = "2.5.151"
+            versionCode = 205014
 
             resValue("string", "release_name", "v$versionName")
             resValue("integer", "release_code", "$versionCode")
 
             externalNativeBuild {
                 cmake {
-                    abiFilters("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+                    abiFilters("arm64-v8a", "armeabi-v7a")
                 }
             }
 

@@ -17,6 +17,7 @@
     <string name="profiles">Profiles</string>
     <string name="not_selected">Not selected</string>
     <string name="format_profile_activated">%s Activated</string>
+    <string name="format_profile_rules">%s rules</string>
 
     <string name="logs">Logs</string>
     <string name="settings">Settings</string>
@@ -208,10 +209,10 @@
     <string name="google_play">Google Play</string>
     <string name="clash_core">Clash Core</string>
     <string name="clash_wiki_url" translatable="false">https://github.com/Dreamacro/clash/wiki</string>
-    <string name="github_issues_url" translatable="false">https://github.com/Kr328/ClashForAndroid/issues</string>
+    <string name="github_issues_url" translatable="false">https://github.com/qqty012/ClashForAndroid/tree/Clash-M</string>
     <string name="donate_url" translatable="false">https://donate.kr328.app</string>
-    <string name="github_url" translatable="false">https://github.com/Kr328/ClashForAndroid</string>
-    <string name="clash_core_url" translatable="false">https://github.com/Dreamacro/clash</string>
+    <string name="github_url" translatable="false">https://github.com/qqty012/ClashForAndroid/tree/Clash-M</string>
+    <string name="clash_core_url" translatable="false">https://github.com/qqty012/clash2</string>
 
     <string name="tips_properties"><![CDATA[Accept Only <strong>Clash Config</strong>(including <strong>Proxy</strong>/<strong>Rules</strong>)]]></string>
     <string name="tips_help"><![CDATA[Clash M is a <strong>freeware</strong> and we do <strong>NOT</strong> provide any service for it]]></string>
@@ -279,4 +280,8 @@
     <string name="version_updated_tips">The settings have been reseted and the old profiles needs to be saved again.</string>
 
     <string name="mode_switch_tips">Valid only for current session</string>
+    <string name="new_rule">New Rule</string>
+    <string name="empty_type">Empty type</string>
+    <string name="invalid_content">Invalid content</string>
+    <string name="profile_flow">used:%s  /  total:%s  expire: %s</string>
 </resources>

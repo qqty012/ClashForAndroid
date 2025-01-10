@@ -41,6 +41,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/log_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/item_text_margin"

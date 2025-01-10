@@ -33,7 +33,7 @@ class TunService : VpnService(), CoroutineScope by CoroutineScope(Dispatchers.De
         val tun = install(TunModule(self))
         val config = install(ConfigurationModule(self))
         val network = install(NetworkObserveModule(self))
-        val sideload = install(SideloadDatabaseModule(self))
+        val sideLoad = install(SideloadDatabaseModule(self))
 
         if (store.dynamicNotification)
             install(DynamicNotificationModule(self))
@@ -48,7 +48,7 @@ class TunService : VpnService(), CoroutineScope by CoroutineScope(Dispatchers.De
             tun.open()
 
             while (isActive) {
-                val quit = select<Boolean> {
+                val quit = select {
                     close.onEvent {
                         true
                     }
@@ -57,7 +57,7 @@ class TunService : VpnService(), CoroutineScope by CoroutineScope(Dispatchers.De
 
                         true
                     }
-                    sideload.onEvent {
+                    sideLoad.onEvent {
                         reason = it.message
 
                         true
@@ -91,6 +91,7 @@ class TunService : VpnService(), CoroutineScope by CoroutineScope(Dispatchers.De
 
         if (StatusProvider.serviceRunning)
             return stopSelf()
+
 
         StatusProvider.serviceRunning = true
 

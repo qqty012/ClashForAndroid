@@ -4,6 +4,10 @@ plugins {
     id("com.android.library")
 }
 
+android {
+    namespace = "com.github.kr328.clash.design"
+}
+
 dependencies {
     implementation(project(":common"))
     implementation(project(":core"))

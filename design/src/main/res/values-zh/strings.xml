@@ -36,6 +36,7 @@
     <string name="file_exported">文件已导出</string>
     <string name="format_minutes">%d 分钟</string>
     <string name="format_profile_activated">%s 已激活</string>
+    <string name="format_profile_rules">%s 的规则</string>
     <string name="format_traffic_forwarded">%s 已转发</string>
     <string name="global_mode">全局模式</string>
     <string name="history">历史</string>
@@ -217,4 +218,8 @@
     <string name="allow_bypass">允许应用绕过</string>
     <string name="allow_bypass_summary">允许其他应用绕过 VPN</string>
     <string name="sniff_tls_sni">嗅探 TLS 的 SNI</string>
+    <string name="new_rule">新建规则</string>
+    <string name="empty_type">空类型</string>
+    <string name="invalid_content">无效的内容</string>
+    <string name="profile_flow">已使用:%s  /  总共:%s  过期时间: %s</string>
 </resources>

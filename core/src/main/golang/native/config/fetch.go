@@ -16,10 +16,11 @@ import (
 )
 
 type Status struct {
-	Action      string   `json:"action"`
-	Args        []string `json:"args"`
-	Progress    int      `json:"progress"`
-	MaxProgress int      `json:"max"`
+	Action      string      `json:"action"`
+	Args        []string    `json:"args"`
+	Progress    int         `json:"progress"`
+	MaxProgress int         `json:"max"`
+	Header      http.Header `json:"header"`
 }
 
 var client = &http.Client{
@@ -32,34 +33,35 @@ var client = &http.Client{
 	Timeout: 60 * time.Second,
 }
 
-func openUrl(url string) (io.ReadCloser, error) {
+func openUrl(url string) (io.ReadCloser, http.Header,error) {
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	request.Header.Set("User-Agent", "ClashForAndroid/"+app.VersionName())
 
 	response, err := client.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return response.Body, nil
+	return response.Body, response.Header, nil
 }
 
 func openContent(url string) (io.ReadCloser, error) {
 	return app.OpenContent(url)
 }
 
-func fetch(url *U.URL, file string) error {
+func fetch(url *U.URL, file string) (http.Header, error) {
 	var reader io.ReadCloser
 	var err error
+	var hearder http.Header = nil
 
 	switch url.Scheme {
 	case "http", "https":
-		reader, err = openUrl(url.String())
+		reader, hearder, err = openUrl(url.String())
 	case "content":
 		reader, err = openContent(url.String())
 	default:
@@ -67,7 +69,7 @@ func fetch(url *U.URL, file string) error {
 	}
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	defer reader.Close()
@@ -76,7 +78,7 @@ func fetch(url *U.URL, file string) error {
 
 	f, err := os.OpenFile(file, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0600)
 	if err != nil {
-		return err
+		return hearder, err
 	}
 
 	defer f.Close()
@@ -86,7 +88,7 @@ func fetch(url *U.URL, file string) error {
 		_ = os.Remove(file)
 	}
 
-	return err
+	return hearder, err
 }
 
 func FetchAndValid(
@@ -96,6 +98,8 @@ func FetchAndValid(
 	reportStatus func(string),
 ) error {
 	configPath := P.Join(path, "config.yaml")
+
+	var header http.Header
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) || force {
 		url, err := U.Parse(url)
@@ -112,7 +116,8 @@ func FetchAndValid(
 
 		reportStatus(string(bytes))
 
-		if err := fetch(url, configPath); err != nil {
+		header, err = fetch(url, configPath)
+		if err != nil {
 			return err
 		}
 	}
@@ -130,6 +135,7 @@ func FetchAndValid(
 			Args:        []string{name},
 			Progress:    index,
 			MaxProgress: total,
+			Header: header,
 		})
 
 		reportStatus(string(bytes))
@@ -157,7 +163,7 @@ func FetchAndValid(
 			return
 		}
 
-		_ = fetch(url, ps)
+		header, _ = fetch(url, ps)
 	})
 
 	bytes, _ := json.Marshal(&Status{
@@ -165,6 +171,7 @@ func FetchAndValid(
 		Args:        []string{},
 		Progress:    0xffff,
 		MaxProgress: 0xffff,
+		Header: header,
 	})
 
 	reportStatus(string(bytes))

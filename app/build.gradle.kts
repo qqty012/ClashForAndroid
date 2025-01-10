@@ -20,7 +20,7 @@ dependencies {
     implementation(libs.androidx.coordinator)
     implementation(libs.androidx.recyclerview)
     implementation(libs.google.material)
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.google.gson)
 }
 
 tasks.getByName("clean", type = Delete::class) {

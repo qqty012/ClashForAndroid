@@ -152,6 +152,17 @@
             android:exported="false"
             android:label="@string/files" />
 
+        <activity
+            android:name=".RulesActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/rule"/>
+        <activity
+            android:name=".NewRuleActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:label="@string/new_rule"/>
+
         <service
             android:name=".LogcatService"
             android:exported="false"

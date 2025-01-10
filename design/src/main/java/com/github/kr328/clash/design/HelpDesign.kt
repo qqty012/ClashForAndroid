@@ -3,7 +3,6 @@ package com.github.kr328.clash.design
 import android.content.Context
 import android.net.Uri
 import android.view.View
-import com.github.kr328.clash.common.compat.preferredLocale
 import com.github.kr328.clash.design.databinding.DesignSettingsCommonBinding
 import com.github.kr328.clash.design.preference.category
 import com.github.kr328.clash.design.preference.clickable
@@ -34,7 +33,7 @@ class HelpDesign(
         val screen = preferenceScreen(context) {
             tips(R.string.tips_help)
 
-            category(R.string.document)
+            /*category(R.string.document)
 
             clickable(
                 title = R.string.clash_wiki,
@@ -43,11 +42,11 @@ class HelpDesign(
                 clicked {
                     openLink(Uri.parse(context.getString(R.string.clash_wiki_url)))
                 }
-            }
+            }*/
 
             category(R.string.feedback)
 
-            if (BuildConfig.PREMIUM) {
+            /*if (BuildConfig.PREMIUM) {
                 clickable(
                     title = R.string.google_play,
                     summary = R.string.google_play_url
@@ -56,7 +55,7 @@ class HelpDesign(
                         openLink(Uri.parse(context.getString(R.string.google_play_url)))
                     }
                 }
-            }
+            }*/
 
             clickable(
                 title = R.string.github_issues,
@@ -89,7 +88,7 @@ class HelpDesign(
                 }
             }
 
-            if (context.resources.configuration.preferredLocale.language == "zh") {
+            /*if (context.resources.configuration.preferredLocale.language == "zh") {
                 category(R.string.donate)
 
                 clickable(
@@ -100,7 +99,7 @@ class HelpDesign(
                         openLink(Uri.parse(context.getString(R.string.donate_url)))
                     }
                 }
-            }
+            }*/
         }
 
         binding.content.addView(screen.root)

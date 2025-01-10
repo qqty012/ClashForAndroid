@@ -12,10 +12,15 @@ import com.github.kr328.clash.common.compat.pendingIntentFlags
 import com.github.kr328.clash.common.constants.Components
 import com.github.kr328.clash.common.constants.Intents
 import com.github.kr328.clash.common.id.UndefinedIds
+import com.github.kr328.clash.common.util.ServiceUtil
 import com.github.kr328.clash.common.util.setUUID
 import com.github.kr328.clash.common.util.uuid
 import com.github.kr328.clash.service.data.ImportedDao
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -44,8 +49,7 @@ class ProfileWorker : BaseService() {
     }
 
     override fun onDestroy() {
-        stopForeground(true)
-
+        ServiceUtil.stopForeground(this)
         super.onDestroy()
     }
 
@@ -81,7 +85,29 @@ class ProfileWorker : BaseService() {
 
         try {
             processing(imported.name) {
-                ProfileProcessor.update(this, imported.uuid, null)
+                ProfileProcessor.update(this, imported.uuid) {
+                    launch {
+                        it.header?.get("Subscription-Userinfo")?.let { userInfo ->
+                            if (userInfo.isNotEmpty()) {
+                                // upload=5416530711; download=269546042893; total=9543417331712; expire=1738277176
+                                val items = userInfo[0].split("; ")
+                                val mp = HashMap<String, Long>()
+                                for (tc in items) {
+                                    tc.split("=").let { spc ->
+                                        if (spc.size == 2) {
+                                            mp[spc[0].trim()] = spc[1].trim().toLong()
+                                        }
+                                    }
+                                }
+                                val used = (mp["upload"]?: 0) + (mp["download"] ?: 0)
+                                val total = mp["total"]?: 0
+                                val expire = mp["expire"]?: 0
+                                val inc = imported.copy(used = used, total = total, expire = expire)
+                                ImportedDao().update(inc)
+                            }
+                        }
+                    }
+                }
             }
 
             completed(imported.uuid, imported.name)

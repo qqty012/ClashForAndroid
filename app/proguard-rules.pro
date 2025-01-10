@@ -57,3 +57,7 @@
     boolean getDEBUG() return false;
     boolean getRECOVER_STACK_TRACES() return false;
 }
+
+-keep class com.github.kr328.clash.server.** { *; }
+-keep class com.google.gson.** { *; }
+-dontwarn com.google.gson.**

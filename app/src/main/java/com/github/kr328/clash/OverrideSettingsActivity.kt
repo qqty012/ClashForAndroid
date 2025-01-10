@@ -33,7 +33,7 @@ class OverrideSettingsActivity : BaseActivity<OverrideSettingsDesign>() {
         setContentDesign(design)
 
         while (isActive) {
-            select<Unit> {
+            select {
                 events.onReceive {
 
                 }

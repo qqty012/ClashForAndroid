@@ -140,6 +140,7 @@ object Clash {
             Bridge.nativeFetchAndValid(
                 object : FetchCallback {
                     override fun report(statusJson: String) {
+                        println(statusJson)
                         reportStatus(
                             Json.Default.decodeFromString(
                                 FetchStatus.serializer(),

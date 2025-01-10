@@ -217,4 +217,9 @@
     <string name="allow_bypass">允許應用程式繞過</string>
     <string name="allow_bypass_summary">允許其他程式繞過 VPN</string>
     <string name="sniff_tls_sni">嗅探 TLS 的 SNI</string>
+    <string name="format_profile_rules">%s 的規則</string>
+    <string name="new_rule">新建規則</string>
+    <string name="empty_type">空白類型</string>
+    <string name="invalid_content">無效的內容</string>
+    <string name="profile_flow">已使用:%s  /  總共:%s  過期時間: %s</string>
 </resources>

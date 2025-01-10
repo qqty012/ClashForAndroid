@@ -5,7 +5,6 @@ import com.github.kr328.clash.common.util.intent
 import com.github.kr328.clash.common.util.ticker
 import com.github.kr328.clash.design.MainDesign
 import com.github.kr328.clash.design.ui.ToastDuration
-import com.github.kr328.clash.server.HttpServer
 import com.github.kr328.clash.store.TipsStore
 import com.github.kr328.clash.util.startClashService
 import com.github.kr328.clash.util.stopClashService
@@ -27,14 +26,13 @@ class MainActivity : BaseActivity<MainDesign>() {
         launch(Dispatchers.IO) {
             showUpdatedTips(design)
         }
-        HttpServer(this)
 
         design.fetch()
 
         val ticker = ticker(TimeUnit.SECONDS.toMillis(1))
 
         while (isActive) {
-            select<Unit> {
+            select {
                 events.onReceive {
                     when (it) {
                         Event.ActivityStart,
@@ -56,6 +54,8 @@ class MainActivity : BaseActivity<MainDesign>() {
                             startActivity(ProxyActivity::class.intent)
                         MainDesign.Request.OpenProfiles ->
                             startActivity(ProfilesActivity::class.intent)
+                        MainDesign.Request.OpenRules ->
+                            startActivity(RulesActivity::class.intent)
                         MainDesign.Request.OpenProviders ->
                             startActivity(ProvidersActivity::class.intent)
                         MainDesign.Request.OpenLogs ->

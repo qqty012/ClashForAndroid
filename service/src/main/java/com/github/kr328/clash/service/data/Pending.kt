@@ -15,4 +15,7 @@ data class Pending(
     @ColumnInfo(name = "source") val source: String,
     @ColumnInfo(name = "interval") val interval: Long,
     @ColumnInfo(name = "createdAt") val createdAt: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "used") val used: Long? = null,
+    @ColumnInfo(name = "total") val total: Long? = null,
+    @ColumnInfo(name = "expire") val expire: Long? = null,
 )

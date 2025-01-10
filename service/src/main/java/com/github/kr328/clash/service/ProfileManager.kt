@@ -15,6 +15,7 @@ import com.github.kr328.clash.service.util.importedDir
 import com.github.kr328.clash.service.util.pendingDir
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
@@ -48,7 +49,6 @@ class ProfileManager(private val context: Context) : IProfileManager,
             deleteRecursively()
             mkdirs()
 
-            @Suppress("BlockingMethodInNonBlockingContext")
             resolve("config.yaml").createNewFile()
             resolve("providers").mkdir()
         }
@@ -163,17 +163,23 @@ class ProfileManager(private val context: Context) : IProfileManager,
         val type = pending?.type ?: imported?.type ?: return null
         val source = pending?.source ?: imported?.source ?: return null
         val interval = pending?.interval ?: imported?.interval ?: return null
+        val used = pending?.used ?: imported?.used
+        val total = pending?.total ?: imported?.total
+        val expire = pending?.expire ?: imported?.expire
 
         return Profile(
-            uuid,
-            name,
-            type,
-            source,
-            active != null && imported?.uuid == active,
-            interval,
-            resolveUpdatedAt(uuid),
-            imported != null,
-            pending != null
+            uuid = uuid,
+            name = name,
+            type = type,
+            source = source,
+            active = active != null && imported?.uuid == active,
+            interval = interval,
+            updatedAt = resolveUpdatedAt(uuid),
+            imported = imported != null,
+            pending = pending != null,
+            used = used,
+            total = total,
+            expire = expire
         )
     }
 

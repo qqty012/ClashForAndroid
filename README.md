@@ -1,12 +1,12 @@
 ## Clash for Android
 
-A Graphical user interface of [clash](https://github.com/Dreamacro/clash) for Android
+A Graphical user interface of [clash](https://github.com/qqty012/clash) for Android
 
 <a href="https://play.google.com/store/apps/details?id=com.github.kr328.clash"><img width="200px" alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"/></a> or [Releases](https://github.com/Kr328/ClashForAndroid/releases)
 
 ### Feature
 
-Fully feature of [clash](https://github.com/Dreamacro/clash) ~~(Exclude `external-controller`~~
+Fully feature of [clash](https://github.com/qqty012/clash) ~~(Exclude `external-controller`~~
 
 ### Requirement
 
@@ -54,3 +54,28 @@ See also [PRIVACY_POLICY.md](./PRIVACY_POLICY.md)
    ```
 
 6. Pick `app-<version>-foss-<arch>-release.apk` in `app/build/outputs/apk/foss/release/`
+
+
+## Http Api
+
+- host: http://127.0.0.1:6330
+
+- GET /clash/start 
+- GET /clash/stop
+- GET /clash/status
+
+- GET /config/add
+`params: name, url`
+- GET /config/delete
+`params: name`
+- GET /config/delete-all
+- GET /config/update
+`params: name`
+- GET /config/update-all
+- GET /config/select
+`params: name`
+
+- GET /proxy/select
+`params: name, group`
+
+- GET /config/log

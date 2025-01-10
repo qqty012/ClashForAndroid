@@ -168,7 +168,7 @@ abstract class BaseActivity<D : Design<*>> :
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        this.onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
 
         return true
     }

@@ -57,33 +57,41 @@ class LogcatActivity : BaseActivity<LogcatDesign>() {
         design.patchMessages(messages, 0, messages.size)
 
         while (isActive) {
-            when (design.requests.receive()) {
-                LogcatDesign.Request.Delete -> {
-                    withContext(Dispatchers.IO) {
-                        logsDir.resolve(file.fileName).delete()
+            design.requests.receive().let {
+                when (it) {
+                    is LogcatDesign.Request.Delete -> {
+                        withContext(Dispatchers.IO) {
+                            logsDir.resolve(file.fileName).delete()
+                        }
+
+                        finish()
                     }
+                    is LogcatDesign.Request.Export -> {
+                        val output = startActivityForResult(
+                            ActivityResultContracts.CreateDocument("text/plain"),
+                            file.fileName
+                        )
 
-                    finish()
-                }
-                LogcatDesign.Request.Export -> {
-                    val output = startActivityForResult(
-                        ActivityResultContracts.CreateDocument("text/plain"),
-                        file.fileName
-                    )
+                        if (output != null) {
+                            try {
+                                withContext(Dispatchers.IO) {
+                                    writeLogTo(messages, file, output)
+                                }
 
-                    if (output != null) {
-                        try {
-                            withContext(Dispatchers.IO) {
-                                writeLogTo(messages, file, output)
+                                design.showToast(R.string.file_exported, ToastDuration.Long)
+                            } catch (e: Exception) {
+                                design.showExceptionToast(e)
                             }
-
-                            design.showToast(R.string.file_exported, ToastDuration.Long)
-                        } catch (e: Exception) {
-                            design.showExceptionToast(e)
                         }
                     }
+                    is LogcatDesign.Request.OpenNewRule -> {
+                    val updateRule = NewRuleActivity::class.intent
+                    updateRule.putExtra("rule_is_new", true)
+                    updateRule.putExtra("rule_item", it.rule)
+                    startActivity(updateRule)
+                    }
+                    else -> Unit
                 }
-                else -> Unit
             }
         }
     }
@@ -107,10 +115,16 @@ class LogcatActivity : BaseActivity<LogcatDesign>() {
                 }
                 design.requests.onReceive {
                     when (it) {
-                        LogcatDesign.Request.Close -> {
+                        is LogcatDesign.Request.Close -> {
                             stopService(LogcatService::class.intent)
 
                             finish()
+                        }
+                        is LogcatDesign.Request.OpenNewRule -> {
+                            val updateRule = NewRuleActivity::class.intent
+                            updateRule.putExtra("rule_is_new", true)
+                            updateRule.putExtra("rule_item", it.rule)
+                            startActivity(updateRule)
                         }
                         else -> Unit
                     }
@@ -152,7 +166,6 @@ class LogcatActivity : BaseActivity<LogcatDesign>() {
         }
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun writeLogTo(messages: List<LogMessage>, file: LogFile, uri: Uri) {
         LogcatFilter(OutputStreamWriter(contentResolver.openOutputStream(uri)), this).use {
             withContext(Dispatchers.Main) {
