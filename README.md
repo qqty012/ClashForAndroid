@@ -1,12 +1,12 @@
 ## Clash for Android
 
-A Graphical user interface of [clash](https://github.com/qqty012/clash) for Android
+A Graphical user interface of [clash](https://github.com/qqty012/clash2) for Android
 
 <a href="https://play.google.com/store/apps/details?id=com.github.kr328.clash"><img width="200px" alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"/></a> or [Releases](https://github.com/Kr328/ClashForAndroid/releases)
 
 ### Feature
 
-Fully feature of [clash](https://github.com/qqty012/clash) ~~(Exclude `external-controller`~~
+Fully feature of [clash](https://github.com/qqty012/clash2) ~~(Exclude `external-controller`~~
 
 ### Requirement
 
